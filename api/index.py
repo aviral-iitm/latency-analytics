@@ -9,9 +9,10 @@ app = FastAPI()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["POST"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods, including POST, OPTIONS
+    allow_headers=["*"],  # Allow all headers
 )
 
 class RequestData(BaseModel):
