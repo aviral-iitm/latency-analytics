@@ -274,7 +274,7 @@ data = [
   }
 ]
 
-@app.post("/analyze")
+@app.post("/api/latency")
 async def analyze_latency(request: RequestData):
     results = {}
     
