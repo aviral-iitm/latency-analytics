@@ -302,12 +302,7 @@ async def analyze_latency(request: RequestData):
             "breaches": breaches
         }
     
-    # MANUALLY SET CORS HEADERS TO BE EXTRA SAFE
-    response = JSONResponse(content=results)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    return response
+    return {"regions": results}  # ← WRAP IN "regions" KEY
 
 # EXPLICIT OPTIONS ENDPOINT
 @app.options("/api/latency")
