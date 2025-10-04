@@ -1,25 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List
 import numpy as np
 
 app = FastAPI()
 
-# Enable CORS
+# BULLETPROOF CORS SETUP
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods, including POST, OPTIONS
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class RequestData(BaseModel):
     regions: List[str]
     threshold_ms: int
 
-# Your data embedded in the code
+# Your data (all 36 records) - KEEP YOUR EXACT DATA
 data = [
   {
     "region": "apac",
@@ -300,4 +301,18 @@ async def analyze_latency(request: RequestData):
             "breaches": breaches
         }
     
-    return results
+    # MANUALLY SET CORS HEADERS TO BE EXTRA SAFE
+    response = JSONResponse(content=results)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
+# EXPLICIT OPTIONS ENDPOINT
+@app.options("/api/latency")
+async def options_latency():
+    response = JSONResponse(content={"message": "OK"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
